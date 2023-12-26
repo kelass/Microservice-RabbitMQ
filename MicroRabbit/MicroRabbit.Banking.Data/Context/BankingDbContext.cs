@@ -6,8 +6,9 @@ namespace MicroRabbit.Banking.Data.Context
     public class BankingDbContext:DbContext
     {
         public BankingDbContext(DbContextOptions options)
-            : base(options)
+            :base(options)
         {
+            Database.Migrate();
         }
         public DbSet<Account> Accounts { get; set; }
     }
