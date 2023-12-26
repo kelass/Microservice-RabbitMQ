@@ -10,6 +10,7 @@ namespace MicroRabbit.Banking.Data.Context
         {
             Database.Migrate();
         }
+
         public DbSet<Account> Accounts { get; set; }
     }
 }

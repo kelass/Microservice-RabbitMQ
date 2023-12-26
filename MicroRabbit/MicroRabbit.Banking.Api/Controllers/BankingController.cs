@@ -1,4 +1,5 @@
-using MicroRabbit.Banking.Application.Services;
+using MicroRabbit.Banking.Application.Interfaces;
+using MicroRabbit.Banking.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroRabbit.Banking.Api.Controllers
@@ -7,16 +8,16 @@ namespace MicroRabbit.Banking.Api.Controllers
     [Route("api/[controller]")]
     public class BankingController : ControllerBase
     {
-        private readonly AccountService _accountService;
-        public BankingController(AccountService accountService)
+        private readonly IAccountService _accountService;
+        public BankingController(IAccountService accountService)
         {
             _accountService = accountService;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<Account>> Get()
         {
-            return null;
+            return Ok(_accountService.GetAccounts());
         }
     }
 }
