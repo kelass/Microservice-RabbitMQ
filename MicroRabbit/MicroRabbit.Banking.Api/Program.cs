@@ -1,3 +1,6 @@
+using MicroRabbit.Banking.Data.Context;
+using MicroRabbit.Infra.IoC;
+using Microsoft.EntityFrameworkCore;
 
 namespace MicroRabbit.Banking.Api
 {
@@ -8,11 +11,22 @@ namespace MicroRabbit.Banking.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<BankingDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("BankingDbConnection"));
+            });
+            RegisterServices(builder.Services);
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Banking Microservice",
+                    Version = "v1",
+                });
+            });
 
             var app = builder.Build();
 
@@ -20,17 +34,21 @@ namespace MicroRabbit.Banking.Api
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Banking Microservice V1");
+                });
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            DependencyContainer.RegisterServices(services);
         }
     }
 }
